@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useAppStore } from "../stores/appStore";
 import { api } from "../lib/api";
 import TopNav from "../components/TopNav";
 import Sidebar from "../components/Sidebar";
