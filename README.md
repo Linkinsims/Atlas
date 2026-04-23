@@ -161,7 +161,7 @@ npm start
 
 #### Frontend (Client)
 
-1. **Connect to Vercel**: Go to [vercel.com](https://vercel.com) and connect your GitHub repository
+1. **Connect to Vercel**: Go to [vercel.com](https://vercel.com) and import `https://github.com/Linkinsims/Atlas.git`
 2. **Configure Build Settings**:
    - **Framework Preset**: Vite
    - **Root Directory**: `client`
@@ -169,9 +169,15 @@ npm start
    - **Output Directory**: `dist`
 3. **Environment Variables** (required):
    ```
+   VITE_SUPABASE_URL=https://your-project.supabase.co
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+   ```
+   _(No separate API URL needed - everything uses Supabase directly)_
    VITE_SUPABASE_URL=your_supabase_project_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
    VITE_API_URL=https://your-deployed-backend-url.com
+   ```
+
    ```
 
 #### Backend (Server) - Deploy Separately
