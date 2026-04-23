@@ -1,0 +1,15 @@
+# Ignore root files that interfere with client deployment
+../package.json
+../package-lock.json
+../node_modules/
+../scripts/
+../.next/
+../public/
+../app/
+../actions/
+../server.js
+../*.log
+../*.js
+../*.ts
+../*.json
+../*.md
