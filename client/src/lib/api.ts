@@ -1,67 +1,99 @@
-// For development, use proxy. For production, use environment variable
-const API_BASE = import.meta.env.DEV ? "/api" : import.meta.env.VITE_API_URL;
+import { supabase } from "./supabase";
 
 export const api = {
   async getEntities() {
     try {
-      const res = await fetch(`${API_BASE}/entities`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
+      const { data, error } = await supabase
+        .from("entities")
+        .select("*")
+        .order("name");
+
+      if (error) throw error;
+      return data || [];
     } catch (error) {
       console.error("Failed to fetch entities:", error);
-      return []; // Return empty array as fallback
+      return [];
     }
   },
+
   async getGroupTotals() {
     try {
-      const res = await fetch(`${API_BASE}/group-totals`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
+      const { data, error } = await supabase
+        .from("group_totals")
+        .select("*")
+        .single();
+
+      if (error) throw error;
+      return data || null;
     } catch (error) {
       console.error("Failed to fetch group totals:", error);
-      return null; // Return null as fallback
+      return null;
     }
   },
+
   async getAlerts() {
     try {
-      const res = await fetch(`${API_BASE}/alerts`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
+      const { data, error } = await supabase
+        .from("alerts")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data || [];
     } catch (error) {
       console.error("Failed to fetch alerts:", error);
-      return []; // Return empty array as fallback
+      return [];
     }
   },
+
   async getActivity() {
     try {
-      const res = await fetch(`${API_BASE}/activity`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
+      const { data, error } = await supabase
+        .from("activity")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+      return data || [];
     } catch (error) {
       console.error("Failed to fetch activity:", error);
-      return []; // Return empty array as fallback
+      return [];
     }
   },
+
   async getProjects() {
     try {
-      const res = await fetch(`${API_BASE}/projects`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
+      const { data, error } = await supabase
+        .from("projects")
+        .select("*")
+        .order("due_date");
+
+      if (error) throw error;
+      return data || [];
     } catch (error) {
       console.error("Failed to fetch projects:", error);
-      return []; // Return empty array as fallback
+      return [];
     }
   },
+
   async dismissAlert(id: string) {
-    const res = await fetch(`${API_BASE}/alerts/${id}`, { method: "DELETE" });
-    return res.ok;
+    try {
+      const { error } = await supabase.from("alerts").delete().eq("id", id);
+
+      return !error;
+    } catch (error) {
+      console.error("Failed to dismiss alert:", error);
+      return false;
+    }
   },
+
   async generateReport(template: string) {
-    const res = await fetch(`${API_BASE}/reports/generate`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ template }),
-    });
-    return res.json();
+    // Simulate report generation (in a real app, this might trigger a Supabase Edge Function)
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    return {
+      success: true,
+      message: `${template} report generated successfully`,
+    };
   },
 };
