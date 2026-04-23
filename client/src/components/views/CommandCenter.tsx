@@ -98,6 +98,28 @@ const CommandCenter = () => {
   }
 
   // Validate totals object has required properties
+  console.log("Validating totals object:", totals);
+  console.log(
+    "totals.totalRevenue:",
+    totals.totalRevenue,
+    typeof totals.totalRevenue,
+  );
+  console.log(
+    "totals.totalExpenses:",
+    totals.totalExpenses,
+    typeof totals.totalExpenses,
+  );
+  console.log(
+    "totals.totalNetProfit:",
+    totals.totalNetProfit,
+    typeof totals.totalNetProfit,
+  );
+  console.log(
+    "totals.profitMargin:",
+    totals.profitMargin,
+    typeof totals.profitMargin,
+  );
+
   if (
     typeof totals.totalRevenue !== "number" ||
     typeof totals.totalExpenses !== "number" ||
@@ -111,6 +133,9 @@ const CommandCenter = () => {
           <div className="text-red-400 text-xl mb-4">Data Error</div>
           <div className="text-sm text-text-secondary">
             Enterprise database returned invalid data format.
+          </div>
+          <div className="text-xs text-text-muted mt-4">
+            Check browser console for detailed data structure.
           </div>
         </div>
       </div>

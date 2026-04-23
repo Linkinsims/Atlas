@@ -39,6 +39,7 @@ export const api = {
 
   async getGroupTotals() {
     try {
+      console.log("Fetching group totals from Supabase...");
       const { data, error } = await supabase
         .from("group_totals")
         .select(
@@ -53,10 +54,19 @@ export const api = {
           entities_at_risk as entitiesAtRisk
         `,
         )
-        .single();
+        .limit(1);
 
-      if (error) throw error;
-      return data || null;
+      console.log("Supabase response:", { data, error });
+
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
+
+      // Return the first record or null if no data
+      const totals = data && data.length > 0 ? data[0] : null;
+      console.log("Group totals data:", totals);
+      return totals;
     } catch (error) {
       console.error("Failed to fetch group totals:", error);
       return null;
