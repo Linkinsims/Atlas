@@ -1,25 +1,56 @@
+// For development, use proxy. For production, use environment variable
 const API_BASE = import.meta.env.DEV ? "/api" : import.meta.env.VITE_API_URL;
 
 export const api = {
   async getEntities() {
-    const res = await fetch(`${API_BASE}/entities`);
-    return res.json();
+    try {
+      const res = await fetch(`${API_BASE}/entities`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (error) {
+      console.error("Failed to fetch entities:", error);
+      return []; // Return empty array as fallback
+    }
   },
   async getGroupTotals() {
-    const res = await fetch(`${API_BASE}/group-totals`);
-    return res.json();
+    try {
+      const res = await fetch(`${API_BASE}/group-totals`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (error) {
+      console.error("Failed to fetch group totals:", error);
+      return null; // Return null as fallback
+    }
   },
   async getAlerts() {
-    const res = await fetch(`${API_BASE}/alerts`);
-    return res.json();
+    try {
+      const res = await fetch(`${API_BASE}/alerts`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (error) {
+      console.error("Failed to fetch alerts:", error);
+      return []; // Return empty array as fallback
+    }
   },
   async getActivity() {
-    const res = await fetch(`${API_BASE}/activity`);
-    return res.json();
+    try {
+      const res = await fetch(`${API_BASE}/activity`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (error) {
+      console.error("Failed to fetch activity:", error);
+      return []; // Return empty array as fallback
+    }
   },
   async getProjects() {
-    const res = await fetch(`${API_BASE}/projects`);
-    return res.json();
+    try {
+      const res = await fetch(`${API_BASE}/projects`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (error) {
+      console.error("Failed to fetch projects:", error);
+      return []; // Return empty array as fallback
+    }
   },
   async dismissAlert(id: string) {
     const res = await fetch(`${API_BASE}/alerts/${id}`, { method: "DELETE" });

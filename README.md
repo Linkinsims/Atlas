@@ -155,6 +155,76 @@ npm run build
 npm start
 ```
 
+## Deployment
+
+### 🚀 Vercel Deployment
+
+#### Frontend (Client)
+
+1. **Connect to Vercel**: Go to [vercel.com](https://vercel.com) and connect your GitHub repository
+2. **Configure Build Settings**:
+   - **Framework Preset**: Vite
+   - **Root Directory**: `client`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+3. **Environment Variables** (required):
+   ```
+   VITE_SUPABASE_URL=your_supabase_project_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   VITE_API_URL=https://your-deployed-backend-url.com
+   ```
+
+#### Backend (Server) - Deploy Separately
+
+**Recommended: Deploy to Railway**
+
+1. Create account at [railway.app](https://railway.app)
+2. Connect your GitHub repository
+3. Set **Root Directory**: `server`
+4. **Build Command**: `npm run build`
+5. **Start Command**: `npm start`
+6. Environment Variables:
+   ```
+   SUPABASE_URL=your_supabase_project_url
+   SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+   PORT=5000
+   ```
+7. Update your Vercel `VITE_API_URL` with the Railway URL
+
+#### Alternative: Deploy Backend to Vercel
+
+1. Create separate Vercel project for server
+2. Set **Root Directory**: `server`
+3. **Build Command**: `npm run build`
+4. **Start Command**: `npm start`
+5. Add same environment variables
+
+### Troubleshooting Common Issues
+
+#### ❌ "Failed to load resource: the server responded with a status of 404" for API calls
+
+**Cause**: `VITE_API_URL` environment variable not set in Vercel
+**Solution**: Add `VITE_API_URL=https://your-backend-url.com` to Vercel environment variables
+
+#### ❌ "SyntaxError: Unexpected token 'T', "The page c"... is not valid JSON"
+
+**Cause**: API returning HTML (404 page) instead of JSON
+**Solution**: Ensure backend is deployed and `VITE_API_URL` points to correct backend URL
+
+#### ❌ "Failed to load resource: the server responded with a status of 429"
+
+**Cause**: Rate limiting from Supabase or backend
+**Solution**: Check Supabase dashboard for usage limits, or add retry logic
+
+#### ❌ Font loading errors (QUIC_PROTOCOL_ERROR)
+
+**Cause**: Google Fonts CDN issues
+**Solution**: Usually resolves automatically, or switch to local fonts
+
+#### ❌ Missing vite.svg
+
+**Solution**: Already fixed in this repository
+
 ## Features
 
 - Dashboard with real-time KPIs and entity performance

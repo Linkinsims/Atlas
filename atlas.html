@@ -1,0 +1,2119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atlas - Enterprise OS</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap");
+      :root {
+        --bg-primary: #0a0b0e;
+        --bg-surface: #111318;
+        --bg-elevated: #181b22;
+        --bg-card: #1e2028;
+        --border-subtle: rgba(255, 255, 255, 0.05);
+        --border-default: rgba(255, 255, 255, 0.08);
+        --border-emphasis: rgba(255, 255, 255, 0.14);
+        --text-primary: #ecedf0;
+        --text-secondary: #9097a6;
+        --text-muted: #555d6e;
+        --positive: #3d9e6e;
+        --negative: #c94f4f;
+        --warning: #b87d3a;
+        --neutral: #5a7db5;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-size: 13px;
+        line-height: 1.4;
+        overflow: hidden;
+      }
+      /* Typography */
+      h1,
+      h2,
+      h3 {
+        font-weight: 500;
+        letter-spacing: -0.3px;
+      }
+      h1 {
+        font-size: 28px;
+      }
+      h2 {
+        font-size: 22px;
+      }
+      h3 {
+        font-size: 18px;
+      }
+      .mono {
+        font-family: "DM Mono", monospace;
+      }
+      .uppercase {
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .muted {
+        color: var(--text-muted);
+      }
+      .secondary {
+        color: var(--text-secondary);
+      }
+      /* Logo */
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .logo-text .atlas {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1;
+      }
+      .logo-text .enterprise {
+        font-size: 9px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        line-height: 1;
+      }
+      /* Nav tabs */
+      .nav-tabs {
+        display: flex;
+        gap: 0;
+      }
+      .nav-tab {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 12.5px;
+        padding: 12px 16px;
+        cursor: pointer;
+        transition: all 150ms ease;
+      }
+      .nav-tab:hover {
+        background: var(--bg-elevated);
+        color: var(--text-primary);
+      }
+      .nav-tab.active {
+        background: var(--bg-card);
+        color: var(--text-primary);
+      }
+      /* Period selector */
+      .period-selector {
+        display: flex;
+        gap: 0;
+        margin-right: 16px;
+      }
+      .period-btn {
+        background: none;
+        border: 1px solid var(--border-default);
+        border-right: none;
+        color: var(--text-secondary);
+        font-size: 11px;
+        padding: 4px 12px;
+        cursor: pointer;
+        transition: all 150ms ease;
+      }
+      .period-btn:first-child {
+        border-radius: 6px 0 0 6px;
+      }
+      .period-btn:last-child {
+        border-radius: 0 6px 6px 0;
+        border-right: 1px solid var(--border-default);
+      }
+      .period-btn:hover {
+        background: var(--bg-elevated);
+        color: var(--text-primary);
+      }
+      .period-btn.active {
+        background: var(--text-primary);
+        color: var(--bg-primary);
+        border-color: var(--text-primary);
+      }
+      /* Nav right */
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .divider {
+        width: 1px;
+        height: 20px;
+        background: var(--border-subtle);
+      }
+      .entity-switcher {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        color: var(--text-secondary);
+      }
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--positive);
+      }
+      .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--bg-elevated);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      /* Sidebar */
+      .sidebar-section {
+        margin-bottom: 24px;
+      }
+      .section-label {
+        font-size: 10px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 8px;
+        padding: 0 20px;
+      }
+      .sidebar-item {
+        padding: 8px 20px;
+        cursor: pointer;
+        transition: all 150ms ease;
+        font-size: 13px;
+      }
+      .sidebar-item:hover {
+        background: var(--bg-elevated);
+      }
+      .sidebar-item.active {
+        background: var(--bg-card);
+        color: var(--text-primary);
+      }
+      .badge {
+        background: var(--negative);
+        color: var(--text-primary);
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 10px;
+        margin-left: 8px;
+      }
+      .entities-list {
+        padding: 0 20px;
+      }
+      .sidebar-entity-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 0;
+        cursor: pointer;
+        transition: all 150ms ease;
+        font-size: 12px;
+      }
+      .sidebar-entity-item:hover {
+        background: var(--bg-elevated);
+      }
+      .entity-color {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+      }
+      .add-entity-btn {
+        width: calc(100% - 40px);
+        margin: 16px 20px;
+        padding: 10px;
+        background: transparent;
+        border: 1px solid var(--border-default);
+        color: var(--text-secondary);
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 150ms ease;
+      }
+      .add-entity-btn:hover {
+        border-color: var(--border-emphasis);
+        color: var(--text-primary);
+      }
+      /* Buttons */
+      .btn-ghost {
+        background: transparent;
+        border: 1px solid var(--border-default);
+        color: var(--text-secondary);
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 150ms ease;
+      }
+      .btn-ghost:hover {
+        border-color: var(--border-emphasis);
+        color: var(--text-primary);
+      }
+      .btn-primary {
+        background: var(--text-primary);
+        border: 1px solid var(--text-primary);
+        color: var(--bg-primary);
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 150ms ease;
+      }
+      .btn-primary:hover {
+        opacity: 0.92;
+      }
+      /* Cards */
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-default);
+        border-radius: 8px;
+        padding: 20px 24px;
+      }
+      .kpi-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-default);
+        border-radius: 8px;
+        padding: 20px 24px;
+      }
+      .kpi-label {
+        font-size: 11px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 4px;
+      }
+      .kpi-value {
+        font-family: "DM Mono", monospace;
+        font-size: 24px;
+        font-weight: 300;
+        margin-bottom: 8px;
+      }
+      .kpi-delta {
+        font-size: 11px;
+        font-family: "DM Mono", monospace;
+      }
+      /* Status badges */
+      .status-badge {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 2px 8px;
+        border-radius: 12px;
+        text-transform: uppercase;
+      }
+      .status-on-track {
+        background: rgba(61, 158, 110, 0.12);
+        color: var(--positive);
+      }
+      .status-at-risk {
+        background: rgba(184, 125, 58, 0.12);
+        color: var(--warning);
+      }
+      .status-critical {
+        background: rgba(201, 79, 79, 0.12);
+        color: var(--negative);
+      }
+      .status-inactive {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-muted);
+      }
+      /* Tables */
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .table th,
+      .table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+      .table th {
+        font-size: 11px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+      }
+      .table tbody tr:nth-child(even) {
+        background: var(--bg-surface);
+      }
+      .table tbody tr:nth-child(odd) {
+        background: var(--bg-elevated);
+      }
+      /* Scrollbars */
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border-default);
+        border-radius: 2px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--border-emphasis);
+      }
+      /* Layouts */
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 12px;
+        margin-bottom: 28px;
+      }
+      .command-center-content {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 24px;
+      }
+      .table-controls {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .entity-table-section {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-default);
+        border-radius: 8px;
+        padding: 20px;
+      }
+      .right-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .alerts-list {
+        margin-top: 16px;
+      }
+      .alert-item {
+        display: flex;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+      .alert-item:last-child {
+        border-bottom: none;
+      }
+      .alert-content {
+        flex: 1;
+      }
+      .alert-message {
+        font-size: 12px;
+        line-height: 1.4;
+        margin-bottom: 4px;
+      }
+      .alert-time {
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+      .alert-dismiss {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0;
+      }
+      .view-all {
+        margin-top: 16px;
+        font-size: 12px;
+        color: var(--text-secondary);
+        cursor: pointer;
+      }
+      .activity-list {
+        margin-top: 16px;
+      }
+      .activity-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 0;
+        font-size: 12px;
+      }
+      .activity-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+      }
+      .activity-entity {
+        font-weight: 500;
+      }
+      .activity-action {
+        flex: 1;
+      }
+      .activity-time {
+        color: var(--text-muted);
+      }
+      .entity-row:hover {
+        background: var(--bg-card) !important;
+      }
+      .entity-row.selected {
+        background: var(--bg-card) !important;
+        border-left: 3px solid var(--text-primary);
+      }
+      .negative {
+        color: var(--negative);
+      }
+      .positive {
+        color: var(--positive);
+      }
+      .neutral {
+        color: var(--neutral);
+      }
+      /* Entities View */
+      .page-header {
+        margin-bottom: 24px;
+      }
+      .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 14px;
+        margin-top: 4px;
+      }
+      .entities-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+      .filter-tabs {
+        display: flex;
+        gap: 0;
+      }
+      .filter-tab {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-default);
+        border-right: none;
+        color: var(--text-secondary);
+        padding: 8px 16px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 150ms ease;
+      }
+      .filter-tab:first-child {
+        border-radius: 6px 0 0 6px;
+      }
+      .filter-tab:last-child {
+        border-radius: 0 6px 6px 0;
+        border-right: 1px solid var(--border-default);
+      }
+      .filter-tab:hover {
+        background: var(--bg-card);
+        color: var(--text-primary);
+      }
+      .filter-tab.active {
+        background: var(--bg-card);
+        color: var(--text-primary);
+        border-color: var(--border-emphasis);
+      }
+      .controls-right {
+        display: flex;
+        gap: 12px;
+      }
+      .entity-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 16px;
+      }
+      .entity-card {
+        position: relative;
+        padding: 0;
+      }
+      .entity-card.at-risk {
+        border-left: 3px solid var(--warning);
+      }
+      .entity-card.critical {
+        border-left: 3px solid var(--negative);
+        background: rgba(201, 79, 79, 0.02);
+      }
+      .entity-header {
+        position: relative;
+      }
+      .entity-color-bar {
+        height: 4px;
+        width: 100%;
+        border-radius: 8px 8px 0 0;
+      }
+      .entity-info {
+        padding: 16px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .entity-name {
+        font-size: 14px;
+        margin: 0;
+      }
+      .industry-badge {
+        align-self: flex-start;
+        font-size: 10px;
+        padding: 2px 8px;
+      }
+      .entity-kpis {
+        padding: 16px 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .kpi-mini {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .kpi-mini .kpi-label {
+        font-size: 10px;
+      }
+      .kpi-mini .kpi-value {
+        font-size: 13px;
+      }
+      .entity-footer {
+        padding: 16px 20px;
+        border-top: 1px solid var(--border-subtle);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+      }
+      .entity-details {
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+      .detail-item {
+        margin-bottom: 2px;
+      }
+      .entity-actions {
+        display: flex;
+        gap: 8px;
+      }
+      /* Entity Detail */
+      .entity-meta {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .entity-detail-kpis {
+        margin-bottom: 24px;
+      }
+      .entity-detail-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+      .detail-panel {
+        padding: 20px;
+      }
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .back-btn {
+        margin-bottom: 16px;
+      }
+      /* Financials View */
+      .financials-controls {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .view-toggle {
+        display: flex;
+        gap: 0;
+        margin-bottom: 24px;
+      }
+      .toggle-btn {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-default);
+        border-right: none;
+        color: var(--text-secondary);
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 150ms ease;
+      }
+      .toggle-btn:first-child {
+        border-radius: 6px 0 0 6px;
+      }
+      .toggle-btn:last-child {
+        border-radius: 0 6px 6px 0;
+        border-right: 1px solid var(--border-default);
+      }
+      .toggle-btn:hover {
+        background: var(--bg-card);
+        color: var(--text-primary);
+      }
+      .toggle-btn.active {
+        background: var(--bg-card);
+        color: var(--text-primary);
+        border-color: var(--border-emphasis);
+      }
+      .pl-table-container {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-default);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 24px;
+      }
+      .pl-table th {
+        background: var(--bg-elevated);
+      }
+      .subtotal-row {
+        background: var(--bg-card) !important;
+        font-weight: 500;
+      }
+      .financials-panels {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+      }
+      .panel h3 {
+        margin-bottom: 16px;
+      }
+      .contributors-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .contributor {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .entity-short {
+        width: 60px;
+        font-size: 11px;
+        font-weight: 500;
+      }
+      .bar-container {
+        flex: 1;
+        height: 8px;
+        background: var(--bg-elevated);
+        border-radius: 4px;
+      }
+      .bar {
+        height: 100%;
+        background: var(--positive);
+        border-radius: 4px;
+      }
+      .amount {
+        width: 80px;
+        text-align: right;
+        font-size: 12px;
+      }
+      .cost-breakdown {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .cost-item {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+      }
+      .margin-comparison {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .margin-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .margin-bar {
+        height: 8px;
+        background: var(--neutral);
+        border-radius: 4px;
+        min-width: 20px;
+      }
+      .margin-pct {
+        width: 50px;
+        text-align: right;
+        font-size: 12px;
+      }
+      /* Operations View */
+      .operations-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-default);
+        border-radius: 8px;
+        padding: 16px 20px;
+      }
+      .stat-label {
+        font-size: 11px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 4px;
+      }
+      .stat-value {
+        font-size: 18px;
+        font-weight: 500;
+      }
+      .projects-controls {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .projects-table-container {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-default);
+        border-radius: 8px;
+        padding: 20px;
+      }
+      .projects-table th {
+        background: var(--bg-elevated);
+      }
+      .progress-bar {
+        position: relative;
+        width: 60px;
+        height: 8px;
+        background: var(--bg-elevated);
+        border-radius: 4px;
+      }
+      .progress-fill {
+        height: 100%;
+        background: var(--positive);
+        border-radius: 4px;
+      }
+      .progress-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 10px;
+        color: var(--text-primary);
+        font-weight: 500;
+      }
+      /* Reports View */
+      .reports-section {
+        margin-bottom: 32px;
+      }
+      .reports-section h2 {
+        font-size: 18px;
+        margin-bottom: 16px;
+      }
+      .templates-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 16px;
+      }
+      .template-card {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+      }
+      .template-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+      }
+      .template-header h3 {
+        font-size: 16px;
+        margin: 0;
+      }
+      .template-format {
+        background: var(--bg-elevated);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        color: var(--text-secondary);
+      }
+      .template-description {
+        color: var(--text-secondary);
+        font-size: 13px;
+        line-height: 1.4;
+        margin-bottom: 16px;
+      }
+      .template-meta {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 16px;
+      }
+      .template-meta > div {
+        margin-bottom: 4px;
+      }
+      .template-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: auto;
+      }
+      .recent-reports-table th {
+        background: var(--bg-elevated);
+      }
+      #top-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 52px;
+        background: var(--bg-surface);
+        border-bottom: 1px solid var(--border-subtle);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 28px;
+        z-index: 100;
+      }
+      #sidebar {
+        position: fixed;
+        left: 0;
+        top: 52px;
+        bottom: 0;
+        width: 220px;
+        background: var(--bg-surface);
+        border-right: 1px solid var(--border-subtle);
+        overflow-y: auto;
+        padding: 20px 0;
+      }
+      #main-content {
+        margin-left: 220px;
+        margin-top: 52px;
+        padding: 28px;
+        height: calc(100vh - 52px);
+        overflow-y: auto;
+        background: var(--bg-primary);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="top-nav">
+      <div class="logo">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect x="4" y="4" width="16" height="16" rx="2" fill="white" />
+          <rect
+            x="8"
+            y="8"
+            width="8"
+            height="8"
+            rx="1"
+            fill="var(--bg-primary)"
+          />
+        </svg>
+        <div class="logo-text">
+          <div class="atlas">Atlas</div>
+          <div class="enterprise">Enterprise OS</div>
+        </div>
+      </div>
+      <div class="nav-tabs">
+        <button class="nav-tab active" data-view="command-center">
+          Command Center
+        </button>
+        <button class="nav-tab" data-view="entities">Entities</button>
+        <button class="nav-tab" data-view="financials">Financials</button>
+        <button class="nav-tab" data-view="operations">Operations</button>
+        <button class="nav-tab" data-view="reports">Reports</button>
+      </div>
+      <div class="nav-right">
+        <div class="period-selector">
+          <button class="period-btn active" data-period="mtd">MTD</button>
+          <button class="period-btn" data-period="qtd">QTD</button>
+          <button class="period-btn" data-period="ytd">YTD</button>
+        </div>
+        <div class="divider"></div>
+        <div class="entity-switcher">
+          <span class="entity-count">12 Entities Active</span>
+          <span class="status-dot green"></span>
+        </div>
+        <div class="user-avatar">GC</div>
+      </div>
+    </div>
+    <div id="sidebar">
+      <div class="sidebar-section">
+        <div class="section-label">Overview</div>
+        <div class="sidebar-item active" data-view="command-center">
+          Command Center
+        </div>
+        <div class="sidebar-item" data-view="portfolio-health">
+          Portfolio Health
+        </div>
+        <div class="sidebar-item" data-view="consolidated-pl">
+          Consolidated P&L
+        </div>
+        <div class="sidebar-item" data-view="group-alerts">
+          Group Alerts <span class="badge">3</span>
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="section-label">Management</div>
+        <div class="sidebar-item" data-view="entity-manager">
+          Entity Manager
+        </div>
+        <div class="sidebar-item" data-view="headcount">Headcount</div>
+        <div class="sidebar-item" data-view="capex-tracker">Capex Tracker</div>
+        <div class="sidebar-item" data-view="risk-register">Risk Register</div>
+      </div>
+      <div class="sidebar-section">
+        <div class="section-label">Intelligence</div>
+        <div class="sidebar-item" data-view="board-reports">Board Reports</div>
+        <div class="sidebar-item" data-view="benchmark-analysis">
+          Benchmark Analysis
+        </div>
+        <div class="sidebar-item" data-view="audit-trail">Audit Trail</div>
+        <div class="sidebar-item" data-view="settings">Settings</div>
+      </div>
+      <div class="divider"></div>
+      <div class="sidebar-section">
+        <div class="section-label">Entities</div>
+        <div class="entities-list">
+          <!-- Entities will be populated by JS -->
+        </div>
+        <button class="add-entity-btn">+ Add Entity</button>
+      </div>
+    </div>
+    <div id="main-content">
+      <!-- Views will be populated by JS -->
+    </div>
+    <script>
+                                                // Data object
+                                                const data = {
+                                                  group: {
+                                                    name: "Meridian Group Holdings",
+                                                    chairman: "Gregory Caldwell",
+                                                    cfo: "Priya Naidoo",
+                                                    headquarters: "Sandton, Johannesburg",
+                                                    founded: 2008,
+                                                    totalEntities: 6,
+                                                  },
+                                                  entities: [
+                                                    {
+                                                      name: "Meridian Logistics (Pty) Ltd",
+                                                      shortName: "MER-LOG",
+                                                      industry: "Logistics & Supply Chain",
+                                                      color: "#8b5cf6",
+                                                      ceo: "Thabo Mokoena",
+                                                      employees: 340,
+                                                      founded: 2009,
+                                                      hq: "Durban, KZN",
+                                                      status: "On Track",
+                                                      monthlyRevenue: 42800000,
+                                                      monthlyExpenses: 31200000,
+                                                      monthlyNetProfit: 11600000,
+                                                      profitMargin: 27.1,
+                                                      ytdRevenue: 385200000,
+                                                      sparkline: [38, 40, 39, 42, 41, 43, 42, 43],
+                                                      activeProjects: 4,
+                                                      openAlerts: 1,
+                                                    },
+                                                    {
+                                                      name: "Prestige Property Holdings",
+                                                      shortName: "PRES-PROP",
+                                                      industry: "Real Estate & Development",
+                                                      color: "#3b82f6",
+                                                      ceo: "Anele Dlamini",
+                                                      employees: 47,
+                                                      founded: 2011,
+                                                      hq: "Cape Town, WC",
+                                                      status: "On Track",
+                                                      monthlyRevenue: 18500000,
+                                                      monthlyExpenses: 9800000,
+                                                      monthlyNetProfit: 8700000,
+                                                      profitMargin: 47.0,
+                                                      ytdRevenue: 166500000,
+                                                      sparkline: [16, 17, 18, 17, 18, 19, 18, 18],
+                                                      activeProjects: 2,
+                                                      openAlerts: 0,
+                                                    },
+                                                    {
+                                                      name: "Nexus Retail Group",
+                                                      shortName: "NEX-RET",
+                                                      industry: "Retail & Consumer Goods",
+                                                      color: "#10b981",
+                                                      ceo: "Simone van der Merwe",
+                                                      employees: 892,
+                                                      founded: 2013,
+                                                      hq: "Johannesburg, GP",
+                                                      status: "At Risk",
+                                                      monthlyRevenue: 34100000,
+                                                      monthlyExpenses: 31900000,
+                                                      monthlyNetProfit: 2200000,
+                                                      profitMargin: 6.4,
+                                                      ytdRevenue: 306900000,
+                                                      sparkline: [38, 36, 35, 34, 33, 34, 33, 34],
+                                                      activeProjects: 6,
+                                                      openAlerts: 2,
+                                                    },
+                                                    {
+                                                      name: "Axiom Technology Solutions",
+                                                      shortName: "AXI-TECH",
+                                                      industry: "Technology & Software",
+                                                      color: "#f59e0b",
+                                                      ceo: "Kaveer Pillay",
+                                                      employees: 124,
+                                                      founded: 2016,
+                                                      hq: "Pretoria, GP",
+                                                      status: "On Track",
+                                                      monthlyRevenue: 11200000,
+                                                      monthlyExpenses: 7400000,
+                                                      monthlyNetProfit: 3800000,
+                                                      profitMargin: 33.9,
+                                                      ytdRevenue: 100800000,
+                                                      sparkline: [9, 10, 10, 11, 11, 11, 11, 11],
+                                                      activeProjects: 3,
+                                                      openAlerts: 0,
+                                                    },
+                                                    {
+                                                      name: "Verdant Agricultural Estates",
+                                                      shortName: "VER-AGR",
+                                                      industry: "Agriculture & Agriprocessing",
+                                                      color: "#ef4444",
+                                                      ceo: "Boitumelo Sithole",
+                                                      employees: 218,
+                                                      founded: 2010,
+                                                      hq: "Bloemfontein, FS",
+                                                      status: "Critical",
+                                                      monthlyRevenue: 6900000,
+                                                      monthlyExpenses: 8100000,
+                                                      monthlyNetProfit: -1200000,
+                                                      profitMargin: -17.4,
+                                                      ytdRevenue: 62100000,
+                                                      sparkline: [9, 8, 8, 7, 7, 7, 6, 6],
+                                                      activeProjects: 2,
+                                                      openAlerts: 3,
+                                                    },
+                                                    {
+                                                      name: "Crestline Financial Services",
+                                                      shortName: "CRES-FIN",
+                                                      industry: "Financial Services & Lending",
+                                                      color: "#6366f1",
+                                                      ceo: "Michelle Hendricks",
+                                                      employees: 63,
+                                                      founded: 2014,
+                                                      hq: "Sandton, GP",
+                                                      status: "On Track",
+                                                      monthlyRevenue: 9300000,
+                                                      monthlyExpenses: 5100000,
+                                                      monthlyNetProfit: 4200000,
+                                                      profitMargin: 45.2,
+                                                      ytdRevenue: 83700000,
+                                                      sparkline: [8, 8, 9, 9, 9, 9, 9, 9],
+                                                      activeProjects: 1,
+                                                      openAlerts: 0,
+                                                    },
+                                                  ],
+                                                  groupTotals: {
+                                                    mtd: {
+                                                      totalRevenue: 122800000,
+                                                      totalExpenses: 93500000,
+                                                      totalNetProfit: 29300000,
+                                                      profitMargin: 23.9,
+                                                      totalHeadcount: 1684,
+                                                      totalActiveProjects: 18,
+                                                      totalOpenAlerts: 6,
+                                                      entitiesAtRisk: 2,
+                                                    },
+                                                  },
+                                                  alerts: [
+                                                    {
+                                                      type: "critical",
+                                                      entity: "Verdant Agricultural",
+                                                      message:
+                                                        "Operating at net loss for 3 consecutive months. Immediate CFO review required.",
+                                                      time: "2 hours ago",
+                                                    },
+                                                    {
+                                                      type: "warning",
+                                                      entity: "Nexus Retail",
+                                                      message:
+                                                        "Profit margin declined below 7% threshold. Cost structure review initiated.",
+                                                      time: "1 day ago",
+                                                    },
+                                                    {
+                                                      type: "warning",
+                                                      entity: "Nexus Retail",
+                                                      message:
+                                                        "Q3 inventory write-down of R 1 200 000 flagged by finance team.",
+                                                      time: "2 days ago",
+                                                    },
+                                                    {
+                                                      type: "critical",
+                                                      entity: "Verdant Agricultural",
+                                                      message: "Harvest yield 34% below seasonal forecast.",
+                                                      time: "3 days ago",
+                                                    },
+                                                    {
+                                                      type: "warning",
+                                                      entity: "Meridian Logistics",
+                                                      message:
+                                                        "Fuel cost escalation impacting Q3 margins. Hedging strategy under review.",
+                                                      time: "4 days ago",
+                                                    },
+                                                    {
+                                                      type: "info",
+                                                      entity: "Prestige Property",
+                                                      message:
+                                                        "New commercial development in Waterfront approved. Breaking ground Q1 2026.",
+                                                      time: "5 days ago",
+                                                    },
+                                                  ],
+                                                  activity: [
+                                                    {
+                                                      entity: "MER-LOG",
+                                                      action: "Board report generated",
+                                                      time: "2 hours ago",
+                                                    },
+                                                    {
+                                                      entity: "AXI-TECH",
+                                                      action: "New hire in tech",
+                                                      time: "4 hours ago",
+                                                    },
+                                                    {
+                                                      entity: "PRES-PROP",
+                                                      action: "Contract signed at property",
+                                                      time: "6 hours ago",
+                                                    },
+                                                    {
+                                                      entity: "NEX-RET",
+                                                      action: "Quarterly review completed",
+                                                      time: "1 day ago",
+                                                    },
+                                                    {
+                                                      entity: "VER-AGR",
+                                                      action: "Budget revision submitted",
+                                                      time: "2 days ago",
+                                                    },
+                                                    {
+                                                      entity: "CRES-FIN",
+                                                      action: "Audit trail updated",
+                                                      time: "3 days ago",
+                                                    },
+                                                    {
+                                                      entity: "MER-LOG",
+                                                      action: "Fleet upgrade approved",
+                                                      time: "4 days ago",
+                                                    },
+                                                    {
+                                                      entity: "PRES-PROP",
+                                                      action: "Property valuation completed",
+                                                      time: "5 days ago",
+                                                    },
+                                                  ],
+                                                };
+
+                                                // Current state
+                                                let currentView = "command-center";
+                                                let currentPeriod = "mtd";
+
+                                                // Utility functions
+                                                function formatCurrency(value) {
+                                                  const absValue = Math.abs(value);
+                                                  const formatted = absValue.toLocaleString("en-ZA", {
+                                                    minimumFractionDigits: 0,
+                                                    maximumFractionDigits: 0,
+                                                  });
+                                                  return value < 0 ? `-R ${formatted}` : `R ${formatted}`;
+                                                }
+
+                                                function formatPercentage(value) {
+                                                  return `${value.toFixed(1)}%`;
+                                                }
+
+                                                function generateSparkline(data) {
+                                                  const min = Math.min(...data);
+                                                  const max = Math.max(...data);
+                                                  const range = max - min || 1;
+                                                  const points = data
+                                                    .map((val, i) => `${i * 7.5},${24 - ((val - min) / range) * 20}`)
+                                                    .join(" ");
+                                                  const color =
+                                                    data[data.length - 1] > data[0]
+                                                      ? "var(--positive)"
+                                                      : "var(--negative)";
+                                                  return `<svg width="60" height="24" viewBox="0 0 60 24"><polyline fill="none" stroke="${color}" stroke-width="1.5" points="${points}"/></svg>`;
+                                                }
+
+                                                // View switching
+                                                function switchView(view) {
+                                                  currentView = view;
+                                                  // Update nav tabs
+                                                  document.querySelectorAll(".nav-tab").forEach((btn) => {
+                                                    btn.classList.toggle("active", btn.dataset.view === view);
+                                                  });
+                                                  // Update sidebar items
+                                                  document.querySelectorAll(".sidebar-item").forEach((item) => {
+                                                    item.classList.toggle("active", item.dataset.view === view);
+                                                  });
+                                                  // Render the view
+                                                  renderView();
+                                                }
+
+                                                // Period switching
+                                                function switchPeriod(period) {
+                                                  currentPeriod = period;
+                                                  document.querySelectorAll(".period-btn").forEach((btn) => {
+                                                    btn.classList.toggle("active", btn.dataset.period === period);
+                                                  });
+                                                  renderView();
+                                                }
+
+                                          function renderView() {
+                                            const main = document.getElementById('main-content');
+                                            main.innerHTML = '';
+                                            if (currentView === 'command-center') {
+                                              renderCommandCenter(main);
+                                } else if (currentView === 'entities') {
+                                  renderEntities(main);
+                      } else if (currentView === 'financials') {
+                        renderFinancials(main);
+            } else if (currentView === 'operations') {
+              renderOperations(main);
+            } else if (currentView === 'reports') {
+              renderReports(main);
+            } else if (currentView.startsWith('entity-detail-')) {
+                                  const entityShort = currentView.replace('entity-detail-', '').toUpperCase();
+                                  const entity = data.entities.find(e => e.shortName === entityShort);
+                                  if (entity) renderEntityDetail(main, entity);
+                                } else {
+                                              main.innerHTML = `<h1>${currentView.replace('-', ' ').toUpperCase()}</h1>`;
+                                            }
+                                          }
+                                                  // Other views to be added
+                                                }
+
+                                                // Render Command Center
+                                                function renderCommandCenter(container) {
+                                                  const totals = data.groupTotals.mtd;
+                                                  const multiplier =
+                                                    currentPeriod === "qtd"
+                                                      ? 2.8
+                                                      : currentPeriod === "ytd"
+                                                        ? totals.totalRevenue /
+                                                          data.entities.reduce((sum, e) => sum + e.monthlyRevenue, 0)
+                                                        : 1;
+
+                                                  container.innerHTML = `
+                                              <div class="kpi-grid">
+                                                <div class="kpi-card">
+                                                  <div class="kpi-label">Group Revenue (${currentPeriod.toUpperCase()})</div>
+                                                  <div class="kpi-value mono">${formatCurrency(Math.round(totals.totalRevenue * multiplier))}</div>
+                                                  <div class="kpi-delta positive">+8.3% vs last month ▲</div>
+                                                </div>
+                                                <div class="kpi-card">
+                                                  <div class="kpi-label">Group Expenses (${currentPeriod.toUpperCase()})</div>
+                                                  <div class="kpi-value mono">${formatCurrency(Math.round(totals.totalExpenses * multiplier))}</div>
+                                                  <div class="kpi-delta negative">+5.1% vs last month ▲</div>
+                                                </div>
+                                                <div class="kpi-card">
+                                                  <div class="kpi-label">Net Profit (${currentPeriod.toUpperCase()})</div>
+                                                  <div class="kpi-value mono">${formatCurrency(Math.round(totals.totalNetProfit * multiplier))}</div>
+                                                  <div class="kpi-delta positive">+14.2% vs last month ▲</div>
+                                                </div>
+                                                <div class="kpi-card">
+                                                  <div class="kpi-label">Profit Margin</div>
+                                                  <div class="kpi-value mono">${formatPercentage(totals.profitMargin)}</div>
+                                                  <div class="kpi-delta positive">+1.4pp vs last month ▲</div>
+                                                </div>
+                                                <div class="kpi-card">
+                                                  <div class="kpi-label">Total Headcount</div>
+                                                  <div class="kpi-value mono">${totals.totalHeadcount.toLocaleString("en-ZA")}</div>
+                                                  <div class="kpi-delta neutral">+12 this month</div>
+                                                </div>
+                                                <div class="kpi-card">
+                                                  <div class="kpi-label">Active Entities</div>
+                                                  <div class="kpi-value mono">${data.group.totalEntities} of ${data.group.totalEntities}</div>
+                                                  <div class="kpi-delta neutral">No change</div>
+                                                </div>
+                                                <div class="kpi-card">
+                                                  <div class="kpi-label">Active Projects</div>
+                                                  <div class="kpi-value mono">${totals.totalActiveProjects}</div>
+                                                  <div class="kpi-delta neutral">+3 this month</div>
+                                                </div>
+                                                <div class="kpi-card">
+                                                  <div class="kpi-label">Open Alerts</div>
+                                                  <div class="kpi-value mono">${totals.totalOpenAlerts}</div>
+                                                  <div class="kpi-delta negative">+2 this month ▲</div>
+                                                </div>
+                                              </div>
+                                              <div class="command-center-content">
+                                                <div class="entity-table-section">
+                                                  <div class="table-controls">
+                                                    <input type="text" class="btn-ghost" placeholder="Filter entities..." style="width: 200px;">
+                                                    <select class="btn-ghost" style="width: 120px;">
+                                                      <option>Sort by...</option>
+                                                    </select>
+                                                  </div>
+                                                  <table class="table entity-table">
+                                                    <thead>
+                                                      <tr>
+                                                        <th>Entity</th>
+                                                        <th>Industry</th>
+                                                        <th>Revenue</th>
+                                                        <th>Expenses</th>
+                                                        <th>Net Profit</th>
+                                                        <th>Margin</th>
+                                                        <th>Headcount</th>
+                                                        <th>Projects</th>
+                                                        <th>Trend</th>
+                                                        <th>Status</th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                      ${data.entities
+                                                        .map(
+                                                          (entity) => `
+                                                        <tr class="entity-row" data-entity="${entity.shortName}">
+                                                          <td>
+                                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                              <span class="entity-color" style="background-color: ${entity.color}"></span>
+                                                              ${entity.shortName}
+                                                            </div>
+                                                          </td>
+                                                          <td>${entity.industry}</td>
+                                                          <td class="mono">${formatCurrency(entity.monthlyRevenue)}</td>
+                                                          <td class="mono">${formatCurrency(entity.monthlyExpenses)}</td>
+                                                          <td class="mono ${entity.monthlyNetProfit < 0 ? "negative" : ""}">${formatCurrency(entity.monthlyNetProfit)}</td>
+                                                          <td class="mono">${formatPercentage(entity.profitMargin)}</td>
+                                                          <td class="mono">${entity.employees}</td>
+                                                          <td class="mono">${entity.activeProjects}</td>
+                                                          <td>${generateSparkline(entity.sparkline)}</td>
+                                                          <td><span class="status-badge status-${entity.status.toLowerCase().replace(" ", "-")}">${entity.status}</span></td>
+                                                        </tr>
+                                                      `,
+                                                        )
+                                                        .join("")}
+                                                    </tbody>
+                                                  </table>
+                                                </div>
+                                                <div class="right-panel">
+                                                  <div class="alerts-panel card">
+                                                    <h3>Active Alerts <span class="badge">${data.alerts.length}</span></h3>
+                                                    <div class="alerts-list">
+                                                      ${data.alerts
+                                                        .map(
+                                                          (alert) => `
+                                                        <div class="alert-item ${alert.type}">
+                                                          <div class="alert-icon">${alert.type === "critical" ? "🔴" : alert.type === "warning" ? "🟡" : "🔵"}</div>
+                                                          <div class="alert-content">
+                                                            <div class="alert-message">${alert.entity}: ${alert.message}</div>
+                                                            <div class="alert-time">${alert.time}</div>
+                                                          </div>
+                                                          <button class="alert-dismiss">×</button>
+                                                        </div>
+                                                      `,
+                                                        )
+                                                        .join("")}
+                                                    </div>
+                                                    <div class="view-all">View All Alerts</div>
+                                                  </div>
+                                                  <div class="activity-panel card">
+                                                    <h3>Group Activity</h3>
+                                                    <div class="activity-list">
+                                                      ${data.activity
+                                                        .map(
+                                                          (item) => `
+                                                        <div class="activity-item">
+                                                          <span class="activity-dot" style="background-color: ${data.entities.find((e) => e.shortName === item.entity)?.color || "#ccc"}"></span>
+                                                          <span class="activity-entity">${item.entity}</span>
+                                                          <span class="activity-action">${item.action}</span>
+                                                          <span class="activity-time">${item.time}</span>
+                                                        </div>
+                                                      `,
+                                                        )
+                                                        .join("")}
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            `;
+
+                                                  // Add event listeners
+                                                  container.querySelectorAll(".entity-row").forEach((row) => {
+                                                    row.addEventListener("click", () => {
+                                                      // Highlight row
+                                                      container
+                                                        .querySelectorAll(".entity-row")
+                                                        .forEach((r) => r.classList.remove("selected"));
+                                                      row.classList.add("selected");
+                                                      // Navigate to entity detail
+                                                      switchView("entity-detail-" + row.dataset.entity.toLowerCase());
+                                                    });
+                                                  });
+
+                                                  container.querySelectorAll(".alert-dismiss").forEach((btn) => {
+                                                    btn.addEventListener("click", (e) => {
+                                                      e.target.closest(".alert-item").remove();
+                                                      // Update badge count
+                                                      const badge = container.querySelector(".alerts-panel .badge");
+                                                      badge.textContent = parseInt(badge.textContent) - 1;
+                    });
+                  });
+                }
+
+                // Render Operations View
+                function renderOperations(container) {
+                  const projects = [
+                    { name: 'Fleet Management System Upgrade', entity: 'MER-LOG', category: 'Technology', status: 'On Schedule', budget: 3400000, spend: 2100000, remaining: 1300000, complete: 62, due: '2026-06-15', lead: 'K. Naidoo' },
+                    { name: 'Durban Hub Expansion Phase 2', entity: 'MER-LOG', category: 'Infrastructure', status: 'Delayed', budget: 12000000, spend: 8500000, remaining: 3500000, complete: 71, due: '2026-08-30', lead: 'T. Mokoena' },
+                    { name: 'Waterfront Commercial Development', entity: 'PRES-PROP', category: 'Development', status: 'On Schedule', budget: 28000000, spend: 18000000, remaining: 10000000, complete: 64, due: '2026-12-01', lead: 'A. Dlamini' },
+                    { name: 'Store Rebranding Initiative', entity: 'NEX-RET', category: 'Marketing', status: 'At Risk', budget: 1800000, spend: 1200000, remaining: 600000, complete: 67, due: '2026-05-20', lead: 'S. van der Merwe' },
+                    { name: 'ERP System Implementation', entity: 'AXI-TECH', category: 'Technology', status: 'On Schedule', budget: 2100000, spend: 1400000, remaining: 700000, complete: 67, due: '2026-07-10', lead: 'K. Pillay' },
+                    { name: 'Irrigation Infrastructure', entity: 'VER-AGR', category: 'Infrastructure', status: 'Delayed', budget: 4500000, spend: 2800000, remaining: 1700000, complete: 62, due: '2026-09-15', lead: 'B. Sithole' },
+                    { name: 'Credit Risk Model v2', entity: 'CRES-FIN', category: 'Technology', status: 'On Schedule', budget: 900000, spend: 650000, remaining: 250000, complete: 72, due: '2026-04-30', lead: 'M. Hendricks' },
+                    { name: 'Cape Town Office Refurbishment', entity: 'PRES-PROP', category: 'Infrastructure', status: 'Completed', budget: 2200000, spend: 2200000, remaining: 0, complete: 100, due: '2026-03-01', lead: 'A. Dlamini' },
+                    { name: 'E-commerce Platform Upgrade', entity: 'NEX-RET', category: 'Technology', status: 'On Schedule', budget: 3200000, spend: 1900000, remaining: 1300000, complete: 59, due: '2026-08-20', lead: 'S. van der Merwe' },
+                    { name: 'Solar Panel Installation', entity: 'VER-AGR', category: 'Infrastructure', status: 'At Risk', budget: 1800000, spend: 950000, remaining: 850000, complete: 53, due: '2026-06-30', lead: 'B. Sithole' },
+                    { name: 'AI Chatbot Development', entity: 'AXI-TECH', category: 'Technology', status: 'On Schedule', budget: 1500000, spend: 900000, remaining: 600000, complete: 60, due: '2026-05-15', lead: 'K. Pillay' },
+                    { name: 'Loan Processing Automation', entity: 'CRES-FIN', category: 'Technology', status: 'Completed', budget: 1200000, spend: 1200000, remaining: 0, complete: 100, due: '2026-02-28', lead: 'M. Hendricks' },
+                    { name: 'Warehouse Automation', entity: 'MER-LOG', category: 'Infrastructure', status: 'On Schedule', budget: 5800000, spend: 3200000, remaining: 2600000, complete: 55, due: '2026-10-10', lead: 'T. Mokoena' },
+                    { name: 'Property Management Software', entity: 'PRES-PROP', category: 'Technology', status: 'On Schedule', budget: 2500000, spend: 1600000, remaining: 900000, complete: 64, due: '2026-07-25', lead: 'A. Dlamini' },
+                    { name: 'Supply Chain Optimization', entity: 'NEX-RET', category: 'Operations', status: 'Delayed', budget: 2900000, spend: 1800000, remaining: 1100000, complete: 62, due: '2026-09-05', lead: 'S. van der Merwe' },
+                    { name: 'Crop Monitoring System', entity: 'VER-AGR', category: 'Technology', status: 'On Schedule', budget: 1300000, spend: 780000, remaining: 520000, complete: 60, due: '2026-05-10', lead: 'B. Sithole' },
+                    { name: 'Mobile App Development', entity: 'AXI-TECH', category: 'Technology', status: 'At Risk', budget: 2800000, spend: 1700000, remaining: 1100000, complete: 61, due: '2026-08-15', lead: 'K. Pillay' },
+                    { name: 'Risk Assessment Framework', entity: 'CRES-FIN', category: 'Operations', status: 'On Schedule', budget: 800000, spend: 480000, remaining: 320000, complete: 60, due: '2026-06-20', lead: 'M. Hendricks' }
+                  ];
+
+                  let filteredProjects = projects;
+                  let entityFilter = 'all';
+                  let statusFilter = 'all';
+
+                  function renderTable() {
+                    const tableHtml = `
+                      <table class="table projects-table">
+                        <thead>
+                          <tr>
+                            <th>Project Name</th>
+                            <th>Entity</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Budget</th>
+                            <th>Spend to Date</th>
+                            <th>Remaining</th>
+                            <th>% Complete</th>
+                            <th>Due Date</th>
+                            <th>Project Lead</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          ${filteredProjects.map(project => `
+                            <tr>
+                              <td>${project.name}</td>
+                              <td>
+                                <div style="display: flex; align-items: center; gap: 6px;">
+                                  <span class="entity-color" style="background-color: ${data.entities.find(e => e.shortName === project.entity)?.color || '#ccc'}"></span>
+                                  ${project.entity}
+                                </div>
+                              </td>
+                              <td>${project.category}</td>
+                              <td><span class="status-badge status-${project.status.toLowerCase().replace(' ', '-')}">${project.status}</span></td>
+                              <td class="mono">${formatCurrency(project.budget)}</td>
+                              <td class="mono">${formatCurrency(project.spend)}</td>
+                              <td class="mono">${formatCurrency(project.remaining)}</td>
+                              <td>
+                                <div class="progress-bar">
+                                  <div class="progress-fill" style="width: ${project.complete}%"></div>
+                                  <span class="progress-text">${project.complete}%</span>
+                                </div>
+                              </td>
+                              <td class="mono">${project.due}</td>
+                              <td>${project.lead}</td>
+                            </tr>
+                          `).join('')}
+                        </tbody>
+                      </table>
+                    `;
+                    container.querySelector('.projects-table-container').innerHTML = tableHtml;
+                  }
+
+                  function updateStats() {
+                    const onSchedule = filteredProjects.filter(p => p.status === 'On Schedule').length;
+                    const delayed = filteredProjects.filter(p => p.status === 'Delayed' || p.status === 'At Risk').length;
+                    const totalBudget = filteredProjects.reduce((sum, p) => sum + p.budget, 0);
+                    const totalSpend = filteredProjects.reduce((sum, p) => sum + p.spend, 0);
+
+                    container.querySelector('.stat-budget .stat-value').textContent = formatCurrency(totalBudget);
+                    container.querySelector('.stat-spend .stat-value').textContent = formatCurrency(totalSpend);
+                    container.querySelector('.stat-schedule .stat-value').textContent = onSchedule.toString();
+                    container.querySelector('.stat-delayed .stat-value').textContent = delayed.toString();
+                  }
+
+                  container.innerHTML = `
+                    <div class="page-header">
+                      <h1>Group Operations</h1>
+                      <p class="page-subtitle">${projects.length} active projects across ${data.entities.length} entities</p>
+                    </div>
+                    <div class="operations-stats">
+                      <div class="stat-card">
+                        <div class="stat-label">Total Project Budget</div>
+                        <div class="stat-budget stat-value mono"></div>
+                      </div>
+                      <div class="stat-card">
+                        <div class="stat-label">Total Spend to Date</div>
+                        <div class="stat-spend stat-value mono"></div>
+                      </div>
+                      <div class="stat-card">
+                        <div class="stat-label">On Schedule</div>
+                        <div class="stat-schedule stat-value mono"></div>
+                      </div>
+                      <div class="stat-card">
+                        <div class="stat-label">Delayed</div>
+                        <div class="stat-delayed stat-value mono"></div>
+                      </div>
+                    </div>
+                    <div class="projects-controls">
+                      <select class="btn-ghost entity-filter">
+                        <option value="all">All Entities</option>
+                        ${data.entities.map(e => `<option value="${e.shortName}">${e.shortName}</option>`).join('')}
+                      </select>
+                      <select class="btn-ghost status-filter">
+                        <option value="all">All Statuses</option>
+                        <option value="On Schedule">On Schedule</option>
+                        <option value="At Risk">At Risk</option>
+                        <option value="Delayed">Delayed</option>
+                        <option value="Completed">Completed</option>
+                      </select>
+                      <input type="text" class="btn-ghost search-input" placeholder="Search projects...">
+                      <button class="btn-primary">+ Add Project</button>
+                    </div>
+                    <div class="projects-table-container">
+                      <!-- Table will be rendered here -->
+                    </div>
+                  `;
+
+                  renderTable();
+                  updateStats();
+
+                  // Filters
+                  container.querySelector('.entity-filter').addEventListener('change', (e) => {
+                    entityFilter = e.target.value;
+                    filteredProjects = projects.filter(p => entityFilter === 'all' || p.entity === entityFilter)
+                                              .filter(p => statusFilter === 'all' || p.status === statusFilter);
+                    renderTable();
+                    updateStats();
+                  });
+
+                  container.querySelector('.status-filter').addEventListener('change', (e) => {
+                    statusFilter = e.target.value;
+                    filteredProjects = projects.filter(p => entityFilter === 'all' || p.entity === entityFilter)
+                                              .filter(p => statusFilter === 'all' || p.status === statusFilter);
+                    renderTable();
+                    updateStats();
+                  });
+
+                  container.querySelector('.search-input').addEventListener('input', (e) => {
+                    const search = e.target.value.toLowerCase();
+                    filteredProjects = projects.filter(p => entityFilter === 'all' || p.entity === entityFilter)
+                                              .filter(p => statusFilter === 'all' || p.status === statusFilter)
+                                              .filter(p => p.name.toLowerCase().includes(search));
+                    renderTable();
+          updateStats();
+        });
+      }
+
+      // Render Reports View
+      function renderReports(container) {
+        const templates = [
+          { name: 'Monthly Board Pack', description: 'Comprehensive executive summary for board of directors', lastGenerated: '18 Apr 2025', estTime: '45 seconds', format: 'PDF' },
+          { name: 'Consolidated P&L Report', description: 'Full profit and loss across all entities with variance analysis', lastGenerated: '30 Mar 2025', estTime: '20 seconds', format: 'Excel' },
+          { name: 'Entity Health Report', description: 'Individual performance scorecards for each subsidiary', lastGenerated: '18 Apr 2025', estTime: '30 seconds', format: 'PDF' },
+          { name: 'Group Headcount Report', description: 'Workforce analytics, cost per head, and movement summary', lastGenerated: '01 Apr 2025', estTime: '15 seconds', format: 'Excel' },
+          { name: 'Risk & Alerts Summary', description: 'Consolidated risk register and active alert analysis', lastGenerated: '20 Apr 2025', estTime: '10 seconds', format: 'PDF' },
+          { name: 'Capex & Projects Report', description: 'Capital expenditure tracking and project portfolio status', lastGenerated: '15 Apr 2025', estTime: '25 seconds', format: 'PDF' }
+        ];
+
+        const recentReports = [
+          { name: 'Monthly Board Pack', generatedBy: 'P. Naidoo', date: '18 Apr 2025', time: '14:30', format: 'PDF' },
+          { name: 'Entity Health Report', generatedBy: 'G. Caldwell', date: '18 Apr 2025', time: '10:15', format: 'PDF' },
+          { name: 'Risk & Alerts Summary', generatedBy: 'P. Naidoo', date: '20 Apr 2025', time: '09:45', format: 'PDF' },
+          { name: 'Consolidated P&L Report', generatedBy: 'P. Naidoo', date: '30 Mar 2025', time: '16:20', format: 'Excel' },
+          { name: 'Group Headcount Report', generatedBy: 'G. Caldwell', date: '01 Apr 2025', time: '11:00', format: 'Excel' }
+        ];
+
+        container.innerHTML = `
+          <div class="page-header">
+            <h1>Intelligence & Reports</h1>
+          </div>
+          <div class="reports-section">
+            <h2>Report Templates</h2>
+            <div class="templates-grid">
+              ${templates.map(template => `
+                <div class="template-card card">
+                  <div class="template-header">
+                    <h3>${template.name}</h3>
+                    <span class="template-format">${template.format}</span>
+                  </div>
+                  <p class="template-description">${template.description}</p>
+                  <div class="template-meta">
+                    <div>Last generated: ${template.lastGenerated}</div>
+                    <div>Est. generation time: ${template.estTime}</div>
+                  </div>
+                  <div class="template-actions">
+                    <button class="btn-ghost generate-btn" data-template="${template.name}">Generate</button>
+                    <button class="btn-ghost">View Last</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div class="reports-section">
+            <h2>Recent Reports</h2>
+            <table class="table recent-reports-table">
+              <thead>
+                <tr>
+                  <th>Report Name</th>
+                  <th>Generated By</th>
+                  <th>Date & Time</th>
+                  <th>Format</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${recentReports.map(report => `
+                  <tr>
+                    <td>${report.name}</td>
+                    <td>${report.generatedBy}</td>
+                    <td>${report.date} ${report.time}</td>
+                    <td>${report.format}</td>
+                    <td><button class="btn-ghost download-btn">Download</button></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+
+        // Generate report functionality
+        container.querySelectorAll('.generate-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const originalText = btn.textContent;
+            btn.textContent = 'Generating...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+              btn.textContent = 'Generated ✓';
+              btn.style.color = 'var(--positive)';
+              setTimeout(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                btn.style.color = '';
+              }, 3000);
+            }, 2000);
+          });
+        });
+      }
+
+                                    // Render Entities View
+                                    function renderEntities(container) {
+                                      let filteredEntities = data.entities;
+                                      let filter = 'all';
+
+                                      function renderCards() {
+                                        const cardsHtml = filteredEntities.map(entity => `
+                                          <div class="entity-card card ${entity.status === 'At Risk' ? 'at-risk' : entity.status === 'Critical' ? 'critical' : ''}">
+                                            <div class="entity-header">
+                                              <div class="entity-color-bar" style="background-color: ${entity.color}"></div>
+                                              <div class="entity-info">
+                                                <h3 class="entity-name">${entity.name}</h3>
+                                                <span class="industry-badge btn-ghost">${entity.industry}</span>
+                                                <span class="status-badge status-${entity.status.toLowerCase().replace(' ', '-')}">${entity.status}</span>
+                                              </div>
+                                            </div>
+                                            <div class="entity-kpis">
+                                              <div class="kpi-mini">
+                                                <div class="kpi-label">Revenue</div>
+                                                <div class="kpi-value mono">${formatCurrency(entity.monthlyRevenue)}</div>
+                                              </div>
+                                              <div class="kpi-mini">
+                                                <div class="kpi-label">Expenses</div>
+                                                <div class="kpi-value mono">${formatCurrency(entity.monthlyExpenses)}</div>
+                                              </div>
+                                              <div class="kpi-mini">
+                                                <div class="kpi-label">Net Profit</div>
+                                                <div class="kpi-value mono ${entity.monthlyNetProfit < 0 ? 'negative' : ''}">${formatCurrency(entity.monthlyNetProfit)}</div>
+                                              </div>
+                                              <div class="kpi-mini">
+                                                <div class="kpi-label">Margin</div>
+                                                <div class="kpi-value mono">${formatPercentage(entity.profitMargin)}</div>
+                                              </div>
+                                              <div class="kpi-mini">
+                                                <div class="kpi-label">Headcount</div>
+                                                <div class="kpi-value mono">${entity.employees}</div>
+                                              </div>
+                                              <div class="kpi-mini">
+                                                <div class="kpi-label">Projects</div>
+                                                <div class="kpi-value mono">${entity.activeProjects}</div>
+                                              </div>
+                                            </div>
+                                            <div class="entity-footer">
+                                              <div class="entity-details">
+                                                <div class="detail-item">CEO: ${entity.ceo}</div>
+                                                <div class="detail-item">HQ: ${entity.hq}</div>
+                                                <div class="detail-item">Founded: ${entity.founded}</div>
+                                              </div>
+                                              <div class="entity-actions">
+                                                <button class="btn-ghost">View Details</button>
+                                                <button class="btn-ghost">Open Financials</button>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        `).join('');
+
+                                        container.querySelector('.entity-cards').innerHTML = cardsHtml;
+
+                                        // Add event listeners
+                                        container.querySelectorAll('.entity-card .btn-ghost').forEach(btn => {
+                                          if (btn.textContent === 'View Details') {
+                                            btn.addEventListener('click', () => {
+                                              const card = btn.closest('.entity-card');
+                                              const entityName = card.querySelector('.entity-name').textContent;
+                                              const entity = data.entities.find(e => e.name === entityName);
+                                              switchView('entity-detail-' + entity.shortName.toLowerCase());
+                                            });
+                                          }
+                                        });
+                                      }
+
+                                      container.innerHTML = `
+                                        <div class="page-header">
+                                          <h1>Entity Portfolio</h1>
+                                          <p class="page-subtitle">${data.entities.length} active entities across ${new Set(data.entities.map(e => e.industry)).size} industries</p>
+                                        </div>
+                                        <div class="entities-controls">
+                                          <div class="filter-tabs">
+                                            <button class="filter-tab active" data-filter="all">All Entities</button>
+                                            <button class="filter-tab" data-filter="on-track">On Track</button>
+                                            <button class="filter-tab" data-filter="needs-attention">Needs Attention</button>
+                                          </div>
+                                          <div class="controls-right">
+                                            <input type="text" class="btn-ghost" placeholder="Search entities..." style="width: 200px;">
+                                            <button class="btn-primary">+ Add Entity</button>
+                                          </div>
+                                        </div>
+                                        <div class="entity-cards">
+                                          <!-- Cards will be rendered here -->
+                                        </div>
+                                      `;
+
+                                      renderCards();
+
+                                      // Filter tabs
+                                      container.querySelectorAll('.filter-tab').forEach(tab => {
+                                        tab.addEventListener('click', () => {
+                                          container.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                                          tab.classList.add('active');
+                                          filter = tab.dataset.filter;
+                                          if (filter === 'all') {
+                                            filteredEntities = data.entities;
+                                          } else if (filter === 'on-track') {
+                                            filteredEntities = data.entities.filter(e => e.status === 'On Track');
+                                          } else if (filter === 'needs-attention') {
+                                            filteredEntities = data.entities.filter(e => e.status === 'At Risk' || e.status === 'Critical');
+                                          }
+                                          renderCards();
+                                        });
+                                      });
+                                    }
+
+                                    // Render Entity Detail
+                                    function renderEntityDetail(container, entity) {
+                                      container.innerHTML = `
+                                        <div class="page-header">
+                                          <button class="btn-ghost back-btn">← Back to Entities</button>
+                                          <h1>${entity.name}</h1>
+                                          <div class="entity-meta">
+                                            <span class="industry-badge btn-ghost">${entity.industry}</span>
+                                            <span class="status-badge status-${entity.status.toLowerCase().replace(' ', '-')}">${entity.status}</span>
+                                          </div>
+                                        </div>
+                                        <div class="entity-detail-kpis kpi-grid">
+                                          <div class="kpi-card">
+                                            <div class="kpi-label">Monthly Revenue</div>
+                                            <div class="kpi-value mono">${formatCurrency(entity.monthlyRevenue)}</div>
+                                          </div>
+                                          <div class="kpi-card">
+                                            <div class="kpi-label">Monthly Expenses</div>
+                                            <div class="kpi-value mono">${formatCurrency(entity.monthlyExpenses)}</div>
+                                          </div>
+                                          <div class="kpi-card">
+                                            <div class="kpi-label">Net Profit</div>
+                                            <div class="kpi-value mono ${entity.monthlyNetProfit < 0 ? 'negative' : ''}">${formatCurrency(entity.monthlyNetProfit)}</div>
+                                          </div>
+                                          <div class="kpi-card">
+                                            <div class="kpi-label">Profit Margin</div>
+                                            <div class="kpi-value mono">${formatPercentage(entity.profitMargin)}</div>
+                                          </div>
+                                          <div class="kpi-card">
+                                            <div class="kpi-label">Headcount</div>
+                                            <div class="kpi-value mono">${entity.employees}</div>
+                                          </div>
+                                          <div class="kpi-card">
+                                            <div class="kpi-label">Active Projects</div>
+                                            <div class="kpi-value mono">${entity.activeProjects}</div>
+                                          </div>
+                                          <div class="kpi-card">
+                                            <div class="kpi-label">YTD Revenue</div>
+                                            <div class="kpi-value mono">${formatCurrency(entity.ytdRevenue)}</div>
+                                          </div>
+                                          <div class="kpi-card">
+                                            <div class="kpi-label">Open Alerts</div>
+                                            <div class="kpi-value mono">${entity.openAlerts}</div>
+                                          </div>
+                                        </div>
+                                        <div class="entity-detail-content">
+                                          <div class="detail-panel card">
+                                            <h3>Entity Information</h3>
+                                            <div class="info-grid">
+                                              <div><strong>CEO:</strong> ${entity.ceo}</div>
+                                              <div><strong>Headquarters:</strong> ${entity.hq}</div>
+                                              <div><strong>Founded:</strong> ${entity.founded}</div>
+                                              <div><strong>Industry:</strong> ${entity.industry}</div>
+                                            </div>
+                                          </div>
+                                          <div class="detail-panel card">
+                                            <h3>Departments</h3>
+                                            <table class="table">
+                                              <thead>
+                                                <tr>
+                                                  <th>Department</th>
+                                                  <th>Headcount</th>
+                                                  <th>Monthly Cost</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                                <tr><td>Operations</td><td>45</td><td class="mono">R 850 000</td></tr>
+                                                <tr><td>Sales & Marketing</td><td>23</td><td class="mono">R 420 000</td></tr>
+                                                <tr><td>Finance & Admin</td><td>12</td><td class="mono">R 310 000</td></tr>
+                                                <tr><td>IT & Support</td><td>8</td><td class="mono">R 180 000</td></tr>
+                                                <tr><td>HR</td><td>5</td><td class="mono">R 120 000</td></tr>
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                        </div>
+                                      `;
+
+                            container.querySelector('.back-btn').addEventListener('click', () => switchView('entities'));
+                          }
+
+                          // Render Financials View
+                          function renderFinancials(container) {
+                            const plData = {
+                              consolidated: {
+                                'Revenue': { actual: 122800000, budget: 118000000, variance: 4800000, variancePct: 4.1 },
+                                'Cost of Sales': { actual: 45200000, budget: 44000000, variance: 1200000, variancePct: 2.7 },
+                                'Gross Profit': { actual: 77600000, budget: 74000000, variance: 3600000, variancePct: 4.9 },
+                                'Gross Margin %': { actual: 63.2, budget: 62.7, variance: 0.5, variancePct: null },
+                                'Operating Expenses': { actual: 0, budget: 0, variance: 0, variancePct: 0 },
+                                'Salaries & Wages': { actual: 28500000, budget: 27800000, variance: 700000, variancePct: 2.5 },
+                                'Rent & Facilities': { actual: 5800000, budget: 5900000, variance: -100000, variancePct: -1.7 },
+                                'Marketing': { actual: 3200000, budget: 3100000, variance: 100000, variancePct: 3.2 },
+                                'Technology': { actual: 4100000, budget: 4000000, variance: 100000, variancePct: 2.5 },
+                                'Logistics & Distribution': { actual: 15200000, budget: 14800000, variance: 400000, variancePct: 2.7 },
+                                'General & Admin': { actual: 7800000, budget: 7600000, variance: 200000, variancePct: 2.6 },
+                                'Total OpEx': { actual: 64600000, budget: 63200000, variance: 1400000, variancePct: 2.2 },
+                                'EBITDA': { actual: 13000000, budget: 10800000, variance: 2200000, variancePct: 20.4 },
+                                'EBITDA Margin %': { actual: 10.6, budget: 9.2, variance: 1.4, variancePct: null },
+                                'Depreciation & Amortization': { actual: 2800000, budget: 2900000, variance: -100000, variancePct: -3.4 },
+                                'EBIT': { actual: 10200000, budget: 7900000, variance: 2300000, variancePct: 29.1 },
+                                'Interest & Finance Charges': { actual: 1200000, budget: 1300000, variance: -100000, variancePct: -7.7 },
+                                'Profit Before Tax': { actual: 9000000, budget: 6600000, variance: 2400000, variancePct: 36.4 },
+                                'Tax (28%)': { actual: 2520000, budget: 1848000, variance: 672000, variancePct: 36.4 },
+                                'Net Profit After Tax': { actual: 6480000, budget: 4752000, variance: 1728000, variancePct: 36.4 },
+                                'Net Margin %': { actual: 5.3, budget: 4.0, variance: 1.3, variancePct: null }
+                              },
+                              entities: data.entities.map(entity => ({
+                                name: entity.shortName,
+                                'Revenue': { actual: entity.monthlyRevenue, budget: Math.round(entity.monthlyRevenue * 0.95), variance: Math.round(entity.monthlyRevenue * 0.05), variancePct: 5.3 },
+                                'Net Profit': { actual: entity.monthlyNetProfit, budget: Math.round(entity.monthlyNetProfit * 0.9), variance: Math.round(entity.monthlyNetProfit * 0.1), variancePct: 11.1 }
+                              }))
+                            };
+
+                            let viewMode = 'consolidated';
+
+                            function renderTable() {
+                              const dataSource = viewMode === 'consolidated' ? plData.consolidated : {};
+                              const entities = viewMode === 'per-entity' ? plData.entities : [];
+
+                              let tableHtml = '';
+
+                              if (viewMode === 'consolidated') {
+                                tableHtml = `
+                                  <table class="table pl-table">
+                                    <thead>
+                                      <tr>
+                                        <th style="width: 200px;">Line Item</th>
+                                        <th>MTD Actual</th>
+                                        <th>MTD Budget</th>
+                                        <th>MTD Variance</th>
+                                        <th>MTD Variance %</th>
+                                        <th>YTD Actual</th>
+                                        <th>YTD Budget</th>
+                                        <th>YTD Variance</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      ${Object.entries(dataSource).map(([item, values]) => `
+                                        <tr class="${item.includes('Profit') || item === 'EBITDA' || item === 'EBIT' ? 'subtotal-row' : ''}">
+                                          <td>${item}</td>
+                                          <td class="mono">${item.includes('%') ? formatPercentage(values.actual) : formatCurrency(values.actual)}</td>
+                                          <td class="mono">${item.includes('%') ? formatPercentage(values.budget) : formatCurrency(values.budget)}</td>
+                                          <td class="mono ${values.variance >= 0 ? 'positive' : 'negative'}">${item.includes('%') ? formatPercentage(values.variance) : formatCurrency(values.variance)}</td>
+                                          <td class="mono ${values.variancePct >= 0 ? 'positive' : 'negative'}">${values.variancePct ? formatPercentage(values.variancePct) : '-'}</td>
+                                          <td class="mono">${item.includes('%') ? formatPercentage(values.actual * 2.8) : formatCurrency(Math.round(values.actual * 2.8))}</td>
+                                          <td class="mono">${item.includes('%') ? formatPercentage(values.budget * 2.8) : formatCurrency(Math.round(values.budget * 2.8))}</td>
+                                          <td class="mono ${(values.actual - values.budget) * 2.8 >= 0 ? 'positive' : 'negative'}">${item.includes('%') ? formatPercentage(values.variance) : formatCurrency(Math.round((values.actual - values.budget) * 2.8))}</td>
+                                        </tr>
+                                      `).join('')}
+                                    </tbody>
+                                  </table>
+                                `;
+                              } else {
+                                // Per-entity view
+                                const lineItems = ['Revenue', 'Net Profit'];
+                                tableHtml = `
+                                  <table class="table pl-table">
+                                    <thead>
+                                      <tr>
+                                        <th style="width: 200px;">Line Item</th>
+                                        ${entities.map(e => `<th>${e.name}</th>`).join('')}
+                                        <th>Group Total</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      ${lineItems.map(item => `
+                                        <tr>
+                                          <td>${item}</td>
+                                          ${entities.map(e => `<td class="mono">${formatCurrency(e[item].actual)}</td>`).join('')}
+                                          <td class="mono">${formatCurrency(entities.reduce((sum, e) => sum + e[item].actual, 0))}</td>
+                                        </tr>
+                                      `).join('')}
+                                    </tbody>
+                                  </table>
+                                `;
+                              }
+
+                              container.querySelector('.pl-table-container').innerHTML = tableHtml;
+                            }
+
+                            container.innerHTML = `
+                              <div class="page-header">
+                                <h1>Consolidated Financials</h1>
+                                <div class="financials-controls">
+                                  <div class="period-selector">
+                                    <button class="period-btn active" data-period="mtd">MTD</button>
+                                    <button class="period-btn" data-period="qtd">QTD</button>
+                                    <button class="period-btn" data-period="ytd">YTD</button>
+                                  </div>
+                                  <button class="btn-ghost">Export to PDF</button>
+                                  <button class="btn-primary">Generate Board Report</button>
+                                </div>
+                              </div>
+                              <div class="view-toggle">
+                                <button class="toggle-btn active" data-view="consolidated">Consolidated View</button>
+                                <button class="toggle-btn" data-view="per-entity">Per-Entity Breakdown</button>
+                              </div>
+                              <div class="pl-table-container">
+                                <!-- Table will be rendered here -->
+                              </div>
+                              <div class="financials-panels">
+                                <div class="panel card">
+                                  <h3>Top Revenue Contributors</h3>
+                                  <div class="contributors-list">
+                                    ${data.entities.sort((a,b) => b.monthlyRevenue - a.monthlyRevenue).slice(0,5).map(entity => `
+                                      <div class="contributor">
+                                        <span class="entity-short">${entity.shortName}</span>
+                                        <div class="bar-container">
+                                          <div class="bar" style="width: ${(entity.monthlyRevenue / data.entities[0].monthlyRevenue) * 100}%"></div>
+                                        </div>
+                                        <span class="amount mono">${formatCurrency(entity.monthlyRevenue)}</span>
+                                      </div>
+                                    `).join('')}
+                                  </div>
+                                </div>
+                                <div class="panel card">
+                                  <h3>Cost Breakdown</h3>
+                                  <div class="cost-breakdown">
+                                    <div class="cost-item"><span>Salaries & Wages</span><span class="mono">44%</span></div>
+                                    <div class="cost-item"><span>Logistics & Distribution</span><span class="mono">24%</span></div>
+                                    <div class="cost-item"><span>General & Admin</span><span class="mono">12%</span></div>
+                                    <div class="cost-item"><span>Rent & Facilities</span><span class="mono">9%</span></div>
+                                    <div class="cost-item"><span>Technology</span><span class="mono">6%</span></div>
+                                    <div class="cost-item"><span>Marketing</span><span class="mono">5%</span></div>
+                                  </div>
+                                </div>
+                                <div class="panel card">
+                                  <h3>Margin Comparison</h3>
+                                  <div class="margin-comparison">
+                                    ${data.entities.map(entity => `
+                                      <div class="margin-item">
+                                        <span class="entity-short">${entity.shortName}</span>
+                                        <div class="margin-bar" style="width: ${Math.max(0, entity.profitMargin)}%"></div>
+                                        <span class="margin-pct mono">${formatPercentage(entity.profitMargin)}</span>
+                                      </div>
+                                    `).join('')}
+                                  </div>
+                                </div>
+                              </div>
+                            `;
+
+                            renderTable();
+
+                            // Toggle view
+                            container.querySelectorAll('.toggle-btn').forEach(btn => {
+                              btn.addEventListener('click', () => {
+                                container.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                                btn.classList.add('active');
+                                viewMode = btn.dataset.view;
+                                renderTable();
+                              });
+                            });
+
+                            // Period buttons (dummy for now)
+                            container.querySelectorAll('.period-btn').forEach(btn => {
+                              btn.addEventListener('click', () => {
+                                container.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+                                btn.classList.add('active');
+                              });
+                            });
+                          }
+
+                                                // Initialize
+                                                document.addEventListener("DOMContentLoaded", () => {
+                                                  // Populate sidebar entities
+                                                  const entitiesList = document.querySelector(".entities-list");
+                                                  data.entities.forEach((entity) => {
+                                                    const item = document.createElement("div");
+                                                    item.className = "sidebar-entity-item";
+                                                    item.innerHTML = `
+                                                <span class="entity-color" style="background-color: ${entity.color}"></span>
+                                                ${entity.shortName}
+                                                <span class="status-dot ${entity.status.toLowerCase().replace(" ", "-")}"></span>
+                                              `;
+                                                    item.addEventListener("click", () =>
+                                                      switchView("entity-detail-" + entity.shortName.toLowerCase()),
+                                                    );
+                                                    entitiesList.appendChild(item);
+                                                  });
+
+                                                  // Event listeners
+                                                  document.querySelectorAll(".nav-tab").forEach((btn) => {
+                                                    btn.addEventListener("click", () => switchView(btn.dataset.view));
+                                                  });
+                                                  document.querySelectorAll(".sidebar-item").forEach((item) => {
+                                                    item.addEventListener("click", () => switchView(item.dataset.view));
+                                                  });
+                                                  document.querySelectorAll(".period-btn").forEach((btn) => {
+                                                    btn.addEventListener("click", () => switchPeriod(btn.dataset.period));
+                                                  });
+
+                                                  // Initial render
+                                                  renderView();
+                                                });
+    </script>
+  </body>
+</html>
