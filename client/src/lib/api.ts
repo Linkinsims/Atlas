@@ -6,26 +6,7 @@ export const api = {
       const { data, error } = await supabase
         .from("entities")
         .select(
-          `
-          id,
-          name,
-          short_name as shortName,
-          industry,
-          color,
-          ceo,
-          employees,
-          founded,
-          hq,
-          status,
-          monthly_revenue as monthlyRevenue,
-          monthly_expenses as monthlyExpenses,
-          monthly_net_profit as monthlyNetProfit,
-          profit_margin as profitMargin,
-          ytd_revenue as ytdRevenue,
-          sparkline,
-          active_projects as activeProjects,
-          open_alerts as openAlerts
-        `,
+          "id, name, short_name as shortName, industry, color, ceo, employees, founded, hq, status, monthly_revenue as monthlyRevenue, monthly_expenses as monthlyExpenses, monthly_net_profit as monthlyNetProfit, profit_margin as profitMargin, ytd_revenue as ytdRevenue, sparkline, active_projects as activeProjects, open_alerts as openAlerts",
         )
         .order("name");
 
@@ -43,16 +24,7 @@ export const api = {
       const { data, error } = await supabase
         .from("group_totals")
         .select(
-          `
-          total_revenue as totalRevenue,
-          total_expenses as totalExpenses,
-          total_net_profit as totalNetProfit,
-          profit_margin as profitMargin,
-          total_headcount as totalHeadcount,
-          total_active_projects as totalActiveProjects,
-          total_open_alerts as totalOpenAlerts,
-          entities_at_risk as entitiesAtRisk
-        `,
+          "total_revenue as totalRevenue, total_expenses as totalExpenses, total_net_profit as totalNetProfit, profit_margin as profitMargin, total_headcount as totalHeadcount, total_active_projects as totalActiveProjects, total_open_alerts as totalOpenAlerts, entities_at_risk as entitiesAtRisk",
         )
         .limit(1);
 
@@ -109,19 +81,7 @@ export const api = {
       const { data, error } = await supabase
         .from("projects")
         .select(
-          `
-          id,
-          name,
-          entity,
-          category,
-          status,
-          budget,
-          spend,
-          remaining,
-          complete,
-          due as dueDate,
-          lead
-        `,
+          "id, name, entity, category, status, budget, spend, remaining, complete, due as dueDate, lead",
         )
         .order("due");
 
