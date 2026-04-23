@@ -28,7 +28,8 @@ const CommandCenter = () => {
     loadData();
   }, []);
 
-  const formatCurrency = (value: number) => {
+  const formatCurrency = (value: number | null | undefined) => {
+    if (value === null || value === undefined) return "R 0";
     const absValue = Math.abs(value);
     const formatted = absValue.toLocaleString("en-ZA", {
       minimumFractionDigits: 0,
@@ -37,19 +38,25 @@ const CommandCenter = () => {
     return value < 0 ? `-R ${formatted}` : `R ${formatted}`;
   };
 
-  const formatPercentage = (value: number) => `${value.toFixed(1)}%`;
+  const formatPercentage = (value: number | null | undefined) => {
+    if (value === null || value === undefined) return "0.0%";
+    return `${value.toFixed(1)}%`;
+  };
 
   const multiplier =
     currentPeriod === "qtd"
       ? 2.8
       : currentPeriod === "ytd"
-        ? totals?.totalRevenue
+        ? totals?.totalRevenue && entities.length > 0
           ? totals.totalRevenue /
-            entities.reduce((sum, e) => sum + e.monthlyRevenue, 0)
+            entities.reduce((sum, e) => sum + (e.monthlyRevenue || 0), 0)
           : 1
         : 1;
 
-  const getSparklineData = (data: number[]) => {
+  const getSparklineData = (data: number[] | null | undefined) => {
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      return [{ x: 0, y: 50 }];
+    }
     const min = Math.min(...data);
     const max = Math.max(...data);
     const range = max - min || 1;
@@ -62,7 +69,18 @@ const CommandCenter = () => {
     }
   };
 
-  if (!totals) return <div>Loading...</div>;
+  if (!totals) {
+    return (
+      <div className="min-h-screen bg-bg-primary text-text-primary flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-xl mb-4">Loading Atlas Dashboard...</div>
+          <div className="text-sm text-text-secondary">
+            Connecting to enterprise database...
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
