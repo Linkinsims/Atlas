@@ -5,7 +5,28 @@ export const api = {
     try {
       const { data, error } = await supabase
         .from("entities")
-        .select("*")
+        .select(
+          `
+          id,
+          name,
+          short_name as shortName,
+          industry,
+          color,
+          ceo,
+          employees,
+          founded,
+          hq,
+          status,
+          monthly_revenue as monthlyRevenue,
+          monthly_expenses as monthlyExpenses,
+          monthly_net_profit as monthlyNetProfit,
+          profit_margin as profitMargin,
+          ytd_revenue as ytdRevenue,
+          sparkline,
+          active_projects as activeProjects,
+          open_alerts as openAlerts
+        `,
+        )
         .order("name");
 
       if (error) throw error;
@@ -20,7 +41,18 @@ export const api = {
     try {
       const { data, error } = await supabase
         .from("group_totals")
-        .select("*")
+        .select(
+          `
+          total_revenue as totalRevenue,
+          total_expenses as totalExpenses,
+          total_net_profit as totalNetProfit,
+          profit_margin as profitMargin,
+          total_headcount as totalHeadcount,
+          total_active_projects as totalActiveProjects,
+          total_open_alerts as totalOpenAlerts,
+          entities_at_risk as entitiesAtRisk
+        `,
+        )
         .single();
 
       if (error) throw error;
@@ -66,8 +98,22 @@ export const api = {
     try {
       const { data, error } = await supabase
         .from("projects")
-        .select("*")
-        .order("due_date");
+        .select(
+          `
+          id,
+          name,
+          entity,
+          category,
+          status,
+          budget,
+          spend,
+          remaining,
+          complete,
+          due as dueDate,
+          lead
+        `,
+        )
+        .order("due");
 
       if (error) throw error;
       return data || [];
