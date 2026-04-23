@@ -29,7 +29,18 @@ const CommandCenter = () => {
   }, []);
 
   const formatCurrency = (value: number | null | undefined) => {
-    if (value === null || value === undefined) return "R 0";
+    // Debug logging
+    console.log("formatCurrency called with:", value, typeof value);
+
+    if (
+      value === null ||
+      value === undefined ||
+      typeof value !== "number" ||
+      isNaN(value)
+    ) {
+      console.log("formatCurrency returning fallback for invalid value");
+      return "R 0";
+    }
     const absValue = Math.abs(value);
     const formatted = absValue.toLocaleString("en-ZA", {
       minimumFractionDigits: 0,
@@ -43,15 +54,19 @@ const CommandCenter = () => {
     return `${value.toFixed(1)}%`;
   };
 
-  const multiplier =
-    currentPeriod === "qtd"
-      ? 2.8
-      : currentPeriod === "ytd"
-        ? totals?.totalRevenue && entities.length > 0
-          ? totals.totalRevenue /
-            entities.reduce((sum, e) => sum + (e.monthlyRevenue || 0), 0)
-          : 1
-        : 1;
+  const multiplier = (() => {
+    if (currentPeriod === "qtd") return 2.8;
+    if (currentPeriod === "ytd") {
+      if (!totals?.totalRevenue || entities.length === 0) return 1;
+      const totalMonthly = entities.reduce(
+        (sum, e) => sum + (e.monthlyRevenue || 0),
+        0,
+      );
+      if (totalMonthly === 0) return 1;
+      return totals.totalRevenue / totalMonthly;
+    }
+    return 1;
+  })();
 
   const getSparklineData = (data: number[] | null | undefined) => {
     if (!data || !Array.isArray(data) || data.length === 0) {
@@ -76,6 +91,26 @@ const CommandCenter = () => {
           <div className="text-xl mb-4">Loading Atlas Dashboard...</div>
           <div className="text-sm text-text-secondary">
             Connecting to enterprise database...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Validate totals object has required properties
+  if (
+    typeof totals.totalRevenue !== "number" ||
+    typeof totals.totalExpenses !== "number" ||
+    typeof totals.totalNetProfit !== "number" ||
+    typeof totals.profitMargin !== "number"
+  ) {
+    console.error("Totals object missing required numeric properties:", totals);
+    return (
+      <div className="min-h-screen bg-bg-primary text-text-primary flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-400 text-xl mb-4">Data Error</div>
+          <div className="text-sm text-text-secondary">
+            Enterprise database returned invalid data format.
           </div>
         </div>
       </div>
